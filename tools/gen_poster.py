@@ -209,17 +209,17 @@ c.line(40, Y(70), W - 40, Y(70))
 # ---- operator inputs (far left) ----
 jl = box(40, 120, 96, 42, "JOYSTICK L", ["neck L / R"], hdr=PERI_HDR)
 jr = box(40, 170, 96, 42, "JOYSTICK R", ["eyes X / Y"], hdr=PERI_HDR)
-pots = box(40, 220, 96, 54, "8 POTS", ["brows, nose,", "eyelids"], hdr=PERI_HDR)
+pots = box(40, 220, 96, 54, "11 POTS", ["brows, nose, lids,", "pivot + 2 faders"], hdr=PERI_HDR)
 tog = box(40, 282, 96, 54, "4 TOGGLES", ["laser, vent,", "eyepop, aux"], hdr=PERI_HDR)
-kp = box(40, 344, 96, 42, "KEYPAD", ["4x4 phrase"], hdr=PERI_HDR)
+kp = box(40, 344, 96, 42, "KEYPADS x2", ["4x4 phrase"], hdr=PERI_HDR)
 
 # ---- controller-side I2C devices ----
 adsc = box(168, 150, 170, 120, "ADS1115 x4  (I2C)",
            ["ADS_01 0x48   brows",
             "ADS_02 0x49   joysticks",
             "ADS_03 0x4A   nose/lids",
-            "ADS_04 0x4B   spare"], hdr=PERI_HDR)
-pcf = box(168, 286, 170, 40, "PCF8574  0x20", ["keypad expander"], hdr=PERI_HDR)
+            "ADS_04 0x4B   pivot/faders"], hdr=PERI_HDR)
+pcf = box(168, 286, 170, 40, "PCF8574 x2  0x20/0x21", ["keypad expanders"], hdr=PERI_HDR)
 
 ctrl = box(168, 360, 190, 150, "j4_controller",
            ["TTGO T-Display (ESP32)",
@@ -450,8 +450,8 @@ c.drawString(tbx + 10, Y(tby + 40), "Project:  Johnny 4")
 c.drawString(tbx + 10, Y(tby + 52), "Drawn:    K. Lange")
 c.drawString(tbx + 10, Y(tby + 64), "Repo:     johnny_4_docs")
 c.setFillColor(INK); c.setFont("Helvetica", 7.3)
-c.drawString(tbx + tbw * 0.60 + 8, Y(tby + 40), "Rev:   A")
-c.drawString(tbx + tbw * 0.60 + 8, Y(tby + 52), "Date:  2026-07-05")
+c.drawString(tbx + tbw * 0.60 + 8, Y(tby + 40), "Rev:   B")
+c.drawString(tbx + tbw * 0.60 + 8, Y(tby + 52), "Date:  2026-07-12")
 c.drawString(tbx + tbw * 0.60 + 8, Y(tby + 64), "Sheet: 1/1")
 
 # legend, below the title block

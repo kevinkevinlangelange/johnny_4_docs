@@ -52,6 +52,15 @@ def diagram_block(md):
     return m.group(1).rstrip("\n").split("\n")
 
 
+def ads_block(md):
+    """First fenced code block after the optional '## ADS1115 pin diagram(s)'
+    heading. Boards with local ADS1115 ADCs get an extra page from it."""
+    m = re.search(r"^## ADS1115 pin diagrams?.*?^```\n(.*?)^```", md, re.S | re.M)
+    if not m:
+        return None
+    return m.group(1).rstrip("\n").split("\n")
+
+
 def pin_table(md):
     """Rows of the markdown table under '## Pin assignments'.
     3-column display tables collapse to 'D0 (GPIO1)' style pin labels."""
@@ -123,22 +132,51 @@ def draw_page(c, name, subtitle, diagram, rows):
     c.showPage()
 
 
+def draw_ads_page(c, name, diagram):
+    """Extra diagram-only page: the board's ADS1115 module pinouts."""
+    c.setFont("Helvetica-Bold", 16)
+    c.drawCentredString(W / 2, H - 55, f"{name} -- ADS1115 pin diagrams")
+    c.setFont("Helvetica", 9)
+    c.drawCentredString(W / 2, H - 72,
+                        "pot wiper to the A-pin; outer legs to 3.3V and GND")
+
+    # Auto-fit: shrink until the page holds the whole block.
+    for dsize, dlead in ((9, 12.5), (8.5, 11.5), (8, 10.5), (7, 9.5)):
+        if 105 + len(diagram) * dlead + 25 <= H:
+            break
+
+    width = max(len(l) for l in diagram)
+    x = max(30, (W - width * dsize * 0.6) / 2)
+
+    y = H - 105
+    c.setFont("Courier", dsize)
+    for line in diagram:
+        c.drawString(x, y, line)
+        y -= dlead
+    c.showPage()
+
+
 pages = []
 for name, subtitle in BOARDS:
     md = read(f"{PROJECTS}/{name}/README.md")
-    pages.append((name, subtitle, diagram_block(md), pin_table(md)))
+    pages.append((name, subtitle, diagram_block(md), pin_table(md), ads_block(md)))
 
 c = canvas.Canvas(OUT, pagesize=letter)
 c.setTitle("Johnny 4 -- master pin diagram")
-for page in pages:
-    draw_page(c, *page)
+for name, subtitle, diagram, rows, ads in pages:
+    draw_page(c, name, subtitle, diagram, rows)
+    if ads:
+        draw_ads_page(c, name, ads)
 c.save()
 print("wrote", OUT)
 
-# Standalone controller PDF, same page as in the master document.
+# Standalone controller PDF, same page(s) as in the master document.
 solo = f"{PROJECTS}/j4_controller/j4_controller_pin_diagram.pdf"
 c = canvas.Canvas(solo, pagesize=letter)
 c.setTitle("j4_controller -- pin diagram")
-draw_page(c, *pages[0])
+name, subtitle, diagram, rows, ads = pages[0]
+draw_page(c, name, subtitle, diagram, rows)
+if ads:
+    draw_ads_page(c, name, ads)
 c.save()
 print("wrote", solo)
