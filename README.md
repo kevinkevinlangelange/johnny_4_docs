@@ -9,7 +9,6 @@ System-level documentation for the Johnny 4 robot: everything that spans more th
 | [POWER.md](POWER.md) | Power distribution for the robot side: which pin each board takes 5V on, buck converter zones, USB flashing/backfeed rules, budget |
 | [j4_master_pin_diagram.pdf](j4_master_pin_diagram.pdf) | All seven boards' pin diagrams, one full letter page each, printable as one document |
 | [tools/gen_master_pin_pdf.py](tools/gen_master_pin_pdf.py) | Regenerates the master PDF (and the standalone j4_controller pin diagram) from the board repos' READMEs |
-| [tools/gen_poster.py](tools/gen_poster.py) | Regenerates the interconnect poster |
 
 ## Regenerating the master pin diagram
 
