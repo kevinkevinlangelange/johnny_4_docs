@@ -8,7 +8,7 @@ System-level documentation for the Johnny 4 robot: everything that spans more th
 |------|------------|
 | [POWER.md](POWER.md) | Power distribution for the robot side: which pin each board takes 5V on, buck converter zones, USB flashing/backfeed rules, budget |
 | [j4_master_pin_diagram.pdf](j4_master_pin_diagram.pdf) | All seven boards' pin diagrams, one full letter page each, printable as one document |
-| [tools/gen_master_pin_pdf.py](tools/gen_master_pin_pdf.py) | Regenerates the master PDF (and the standalone j4_controller pin diagram) from the board repos' READMEs |
+| [tools/gen_master_pin_pdf.py](tools/gen_master_pin_pdf.py) | Regenerates the master PDF (and the standalone per-repo pin diagrams you name) from the board repos' READMEs |
 
 ## Regenerating the master pin diagram
 
@@ -17,6 +17,14 @@ The generator parses each repo README's `## Pin diagram` fenced block and `## Pi
 ```bash
 python tools/gen_master_pin_pdf.py
 ```
+
+That always rewrites `j4_controller_pin_diagram.pdf` too. To rewrite other boards' standalone `<repo>_pin_diagram.pdf` from the same pages, name them:
+
+```bash
+python tools/gen_master_pin_pdf.py j4_display_right j4_talk
+```
+
+Only the boards named are touched.
 
 Requires `reportlab`. The script expects the board repos checked out as siblings of this repo (`../j4_controller`, `../j4_receiver`, and so on).
 

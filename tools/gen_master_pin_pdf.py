@@ -3,7 +3,8 @@
 # in signal-chain order. Content is pulled live from each repo's README
 # ("## Pin diagram" fenced block + "## Pin assignments" markdown table) so the
 # master document always matches the repos. Also regenerates the standalone
-# j4_controller_pin_diagram.pdf with the identical page so the two never drift.
+# j4_controller_pin_diagram.pdf (and any other boards named on the command
+# line) with the identical page so the two never drift.
 #
 # Table style matches the original per-repo PDFs: dark header row with white
 # bold text, thin grey gridlines, and alternating white / light-grey body rows.
@@ -11,6 +12,7 @@
 import html
 import os
 import re
+import sys
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle
@@ -170,13 +172,23 @@ for name, subtitle, diagram, rows, ads in pages:
 c.save()
 print("wrote", OUT)
 
-# Standalone controller PDF, same page(s) as in the master document.
-solo = f"{PROJECTS}/j4_controller/j4_controller_pin_diagram.pdf"
-c = canvas.Canvas(solo, pagesize=letter)
-c.setTitle("j4_controller -- pin diagram")
-name, subtitle, diagram, rows, ads = pages[0]
-draw_page(c, name, subtitle, diagram, rows)
-if ads:
-    draw_ads_page(c, name, ads)
-c.save()
-print("wrote", solo)
+# Standalone per-repo PDFs, same page(s) as in the master document, so the two
+# never drift. j4_controller's is always written. Name more boards on the
+# command line to rewrite theirs too, e.g. after a README pin change:
+#     gen_master_pin_pdf.py j4_display_right j4_talk
+# Only the boards named are touched, so a repo with its own uncommitted PDF
+# is left alone unless asked for.
+solos = ["j4_controller"] + [a for a in sys.argv[1:] if a != "j4_controller"]
+known = [p[0] for p in pages]
+for board in solos:
+    if board not in known:
+        raise SystemExit(f"unknown board {board!r}; expected one of {known}")
+    name, subtitle, diagram, rows, ads = pages[known.index(board)]
+    solo = f"{PROJECTS}/{name}/{name}_pin_diagram.pdf"
+    c = canvas.Canvas(solo, pagesize=letter)
+    c.setTitle(f"{name} -- pin diagram")
+    draw_page(c, name, subtitle, diagram, rows)
+    if ads:
+        draw_ads_page(c, name, ads)
+    c.save()
+    print("wrote", solo)
