@@ -25,7 +25,7 @@ The controller side (j4_controller + the two XIAO displays) is not covered here;
         |
         +-- BUCK 1: 5V / 3A "logic" ---------> j4_receiver ....... 5V header pin
         |                                ----> j4_stepper_neck ... chopped-USB VBUS
-        |                                ----> 74ACT125 x2 VCC ... (on neck board)
+        |                                ----> 74AHCT125 x3 VCC .. (on neck board)
         |                                ----> j4_stepper_eyes ... chopped-USB VBUS
         |                                ----> j4_talk ........... VIN pin
         |                                        (cut the VUSB/VIN pad trace first)
@@ -50,7 +50,7 @@ The controller side (j4_controller + the two XIAO displays) is not covered here;
 | j4_stepper_neck (LOLIN32-Lite style) | USB-C port via chopped cable | Red = VBUS, black = GND, tape off green/white | These boards break out no 5V pin, so the USB port IS the 5V input; goes through the normal input path and regulator |
 | j4_stepper_eyes (LOLIN32-Lite style) | USB-C port via chopped cable | Same as neck board | Same reasoning |
 | j4_talk (Teensy 4.1) | VIN pin | Corner pin next to GND; accepts 3.6-5.5V | Cut the VUSB/VIN trace (two pads on the underside) before wiring this |
-| 74ACT125 x2 | VCC pin 14 | On the neck board | Same 5V line that feeds the neck board |
+| 74AHCT125 x3 | VCC pin 14 | On the neck board | Same 5V line that feeds the neck board |
 | PCA9685 servo power | V+ terminal | Screw terminal / V+ pin | From the servo buck, NOT the logic buck |
 | PCA9685 logic | VCC pin | Already wired | From j4_receiver's 3.3V pin |
 | WS2812B strip | 5V + GND at the strip | Own injection point | Data stays on receiver GPIO 25 through the ~330 ohm resistor |
@@ -74,7 +74,7 @@ Powering a board externally while its USB port is also connected puts two 5V sou
 | j4_stepper_neck (no WiFi) | 250 mA |
 | j4_stepper_eyes (no WiFi) | 250 mA |
 | j4_talk + Audio Shield | 300 mA |
-| 74ACT125 x2 (driving 6 DM556TE opto inputs at 7-16 mA each) | ~100 mA |
+| 74AHCT125 x3 (driving 6 DM556TE opto inputs at 7-16 mA each) | ~100 mA |
 | **Total** | **~1.4 A** |
 
 A 3 A buck gives comfortable margin. The LED buck and servo buck are sized by their own loads (strip length, servo count and stall behavior), which is exactly why they are separate.
